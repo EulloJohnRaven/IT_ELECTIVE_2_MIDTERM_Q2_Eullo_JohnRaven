@@ -1,0 +1,42 @@
+﻿@model IEnumerable<PlaylistApp.Models.Entities.Playlist>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Playlists</h2>
+        <a asp-action="Create" class="btn btn-primary">+ Create New Playlist</a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">No playlists found. Create one to get started!</div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var playlist in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">@playlist.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted small mb-3">Created by: <strong>@playlist.CreatorName</strong></p>
+
+                            <h6 class="fw-bold">Tracks (@playlist.Videos.Count)</h6>
+                            <ul class="list-group list-group-flush">
+                                @foreach (var video in playlist.Videos)
+                                {
+                                    <li class="list-group-item px-0">
+                                        <a href="@video.YouTubeUrl" target="_blank" class="text-decoration-none">▶ Watch</a>
+                                        <span class="text-muted ms-2">— @video.TrackNote</span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
