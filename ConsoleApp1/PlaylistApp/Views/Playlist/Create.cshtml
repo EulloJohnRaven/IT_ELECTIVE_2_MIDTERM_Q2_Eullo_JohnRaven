@@ -1,66 +1,160 @@
 ﻿@model PlaylistApp.Models.DTOs.CreatePlaylistDto
 
-<div class="container mt-4" style="max-width: 700px;">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Create New Playlist</h4>
-            <a asp-action="Index" class="btn btn-outline-light btn-sm">Cancel</a>
-        </div>
-        <div class="card-body">
-            <form method="post">
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label fw-bold">Playlist Title</label>
-                    <input asp-for="Title" class="form-control" placeholder="e.g. OPM Chill Hits" />
-                    <span asp-validation-for="Title" class="text-danger small"></span>
-                </div>
+<style>
+    body {
+        background-color: #121212 !important;
+        color: #ffffff !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-                <h5 class="mt-4 mb-3">Track List (YouTube Links)</h5>
+    .spotify-container {
+        max-width: 734px;
+        margin-top: 3rem;
+        margin-bottom: 5rem;
+    }
 
-                @for (int i = 0; i < Model.Videos.Count; i++)
-                {
-                    <div class="card mb-3 border-light bg-light">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-secondary">Track #@(i + 1)</span>
-                                @if (Model.Videos.Count > 1)
-                                {
-                                    <button type="submit"
-                                            asp-action="RemoveVideoRow"
-                                            asp-route-index="@i"
-                                            formnovalidate
-                                            class="btn btn-outline-danger btn-sm">
-                                        Remove
-                                    </button>
-                                }
-                            </div>
-                            <div class="mb-2">
-                                <input name="Videos[@i].YouTubeUrl"
-                                       value="@Model.Videos[i].YouTubeUrl"
-                                       class="form-control"
-                                       placeholder="YouTube URL" />
-                            </div>
-                            <div>
-                                <input name="Videos[@i].TrackNote"
-                                       value="@Model.Videos[i].TrackNote"
-                                       class="form-control"
-                                       placeholder="Track Note" />
-                            </div>
+    .spotify-card {
+        background-color: #000000;
+        border-radius: 8px;
+        border: none;
+        padding: 2.5rem;
+        color: #ffffff;
+    }
+
+    .spotify-label {
+        font-weight: 700;
+        font-size: 0.875rem;
+        margin-bottom: 8px;
+        color: #ffffff;
+    }
+
+    .spotify-input {
+        background-color: #121212;
+        border: 1px solid #727272;
+        color: #ffffff !important;
+        border-radius: 4px;
+        padding: 14px;
+    }
+
+        .spotify-input:focus {
+            background-color: #121212;
+            border-color: white;
+            color: #ffffff !important;
+            box-shadow: inset 0 0 0 1px white;
+        }
+
+        .spotify-input::placeholder {
+            color: #a7a7a7 !important;
+            opacity: 1;
+        }
+
+    .spotify-btn-primary {
+        background-color: #1ed760;
+        color: black;
+        font-weight: 700;
+        border-radius: 500px;
+        border: none;
+        padding: 14px 32px;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        transition: transform 33ms cubic-bezier(.3,0,0,1), background-color 33ms cubic-bezier(.3,0,0,1);
+    }
+
+        .spotify-btn-primary:hover {
+            background-color: #1fdf64;
+            transform: scale(1.04);
+            color: black;
+        }
+
+    .spotify-btn-outline {
+        background-color: transparent;
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 500px;
+        border: 1px solid #727272;
+        padding: 10px 24px;
+        transition: transform 33ms cubic-bezier(.3,0,0,1), border-color 33ms cubic-bezier(.3,0,0,1);
+    }
+
+        .spotify-btn-outline:hover {
+            border-color: #ffffff;
+            transform: scale(1.04);
+            color: #ffffff;
+        }
+
+    .track-card {
+        background-color: #181818;
+        border-radius: 8px;
+        border: 1px solid #282828;
+    }
+</style>
+
+<div class="container spotify-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0" style="font-size: 2.5rem; letter-spacing: -1px;">Create Playlist</h2>
+        <a asp-action="Index" class="spotify-btn-outline text-decoration-none">Cancel</a>
+    </div>
+
+    <div class="card shadow-lg spotify-card">
+        <form method="post">
+            <div class="mb-5">
+                <label asp-for="Title" class="form-label spotify-label">Playlist Name</label>
+                <input asp-for="Title" class="form-control spotify-input" placeholder="e.g. Late Night Coding Sessions" />
+                <span asp-validation-for="Title" class="text-danger small mt-2 d-block fw-bold"></span>
+            </div>
+
+            <h5 class="fw-bold mb-4" style="color: #b3b3b3;">Tracks</h5>
+
+            @for (int i = 0; i < Model.Videos.Count; i++)
+            {
+                <div class="card mb-4 track-card p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge rounded-pill" style="background-color: #282828; color: #ffffff; font-size: 0.85rem;">Track #@(i + 1)</span>
+                        @if (Model.Videos.Count > 1)
+                        {
+                            <!-- BUG 3 FIX MAINTAINED: formnovalidate is present -->
+                            <button type="submit"
+                                    asp-action="RemoveVideoRow"
+                                    asp-route-index="@i"
+                                    formnovalidate
+                                    class="btn btn-sm text-danger fw-bold" style="background: transparent; border: none;">
+                                ✕ Remove
+                            </button>
+                        }
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label spotify-label small">YouTube URL</label>
+                            <input name="Videos[@i].YouTubeUrl"
+                                   value="@Model.Videos[i].YouTubeUrl"
+                                   class="form-control spotify-input"
+                                   placeholder="Paste link here" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label spotify-label small">Track Note</label>
+                            <input name="Videos[@i].TrackNote"
+                                   value="@Model.Videos[i].TrackNote"
+                                   class="form-control spotify-input"
+                                   placeholder="Why this song?" />
                         </div>
                     </div>
-                }
+                </div>
+            }
 
-                <div class="mb-4">
-                    <button type="submit" asp-action="AddVideoRow" formnovalidate class="btn btn-outline-primary w-100">
-                        + Add Another Track
-                    </button>
-                </div>
-                <hr />
-                <div class="d-grid">
-                    <button type="submit" asp-action="Save" class="btn btn-success btn-lg">
-                        Save Complete Playlist
-                    </button>
-                </div>
-            </form>
-        </div>
+            <div class="mb-5 text-center mt-4">
+                <!-- BUG 3 FIX MAINTAINED: formnovalidate is present -->
+                <button type="submit" asp-action="AddVideoRow" formnovalidate class="spotify-btn-outline w-100 py-3">
+                    + Add Another Track
+                </button>
+            </div>
+
+            <hr style="border-color: #282828;" class="mb-4" />
+
+            <div class="d-grid mt-4">
+                <button type="submit" asp-action="Save" class="btn spotify-btn-primary py-3" style="font-size: 1.1rem;">
+                    Save Complete Playlist
+                </button>
+            </div>
+        </form>
     </div>
 </div>

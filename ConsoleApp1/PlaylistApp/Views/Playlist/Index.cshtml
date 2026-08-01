@@ -1,35 +1,122 @@
 ﻿@model IEnumerable<PlaylistApp.Models.Entities.Playlist>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>My Playlists</h2>
-        <a asp-action="Create" class="btn btn-primary">+ Create New Playlist</a>
+<style>
+    body {
+        background-color: #121212 !important;
+        color: #ffffff !important;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .spotify-btn {
+        background-color: #1ed760;
+        color: black;
+        font-weight: 700;
+        border-radius: 500px;
+        border: none;
+        padding: 10px 24px;
+        transition: transform 33ms cubic-bezier(.3,0,0,1), background-color 33ms cubic-bezier(.3,0,0,1);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .spotify-btn:hover {
+            background-color: #1fdf64;
+            transform: scale(1.04);
+            color: black;
+        }
+
+    .spotify-btn-outline {
+        background-color: transparent;
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 500px;
+        border: 1px solid #727272;
+        padding: 10px 24px;
+        transition: transform 33ms cubic-bezier(.3,0,0,1), border-color 33ms cubic-bezier(.3,0,0,1);
+        display: inline-flex;
+        align-items: center;
+    }
+
+        .spotify-btn-outline:hover {
+            border-color: #ffffff;
+            transform: scale(1.04);
+            color: #ffffff;
+        }
+
+    .spotify-card {
+        background-color: #000000;
+        border-radius: 8px;
+        border: none;
+        color: #ffffff;
+        transition: background-color 0.3s ease;
+    }
+
+        .spotify-card:hover {
+            background-color: #1a1a1a;
+        }
+
+    .spotify-card-header {
+        background-color: transparent;
+        border-bottom: 1px solid #282828;
+        padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+    }
+
+    .spotify-list-item {
+        background-color: transparent;
+        border-color: #282828;
+        color: #a7a7a7;
+    }
+
+    .spotify-link {
+        color: #ffffff;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+        .spotify-link:hover {
+            text-decoration: underline;
+            color: #1ed760;
+        }
+</style>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold mb-0" style="font-size: 2.5rem; letter-spacing: -1px;">Your Library</h2>
+
+        <!-- Button Group for Actions -->
+        <div class="d-flex gap-3">
+            <a asp-controller="Auth" asp-action="Logout" class="spotify-btn-outline text-decoration-none">Log Out</a>
+            <a asp-action="Create" class="spotify-btn text-decoration-none">+ Create Playlist</a>
+        </div>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-info">No playlists found. Create one to get started!</div>
+        <div class="text-center py-5" style="background-color: #000000; border-radius: 8px;">
+            <h4 class="fw-bold mb-3">It's a bit empty here...</h4>
+            <p style="color: #a7a7a7;">Create your first playlist to get started.</p>
+        </div>
     }
     else
     {
         <div class="row">
             @foreach (var playlist in Model)
             {
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-dark text-white">
-                            <h5 class="mb-0">@playlist.Title</h5>
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card shadow-sm h-100 spotify-card pb-3">
+                        <div class="card-header spotify-card-header">
+                            <h4 class="mb-0 fw-bold text-truncate">@playlist.Title</h4>
+                            <p class="small mt-1 mb-0" style="color: #a7a7a7;">By @playlist.CreatorName</p>
                         </div>
-                        <div class="card-body">
-                            <p class="text-muted small mb-3">Created by: <strong>@playlist.CreatorName</strong></p>
-
-                            <h6 class="fw-bold">Tracks (@playlist.Videos.Count)</h6>
+                        <div class="card-body pt-3">
+                            <p class="fw-bold mb-2 small text-uppercase" style="letter-spacing: 1px; color: #b3b3b3;">Tracks (@playlist.Videos.Count)</p>
                             <ul class="list-group list-group-flush">
                                 @foreach (var video in playlist.Videos)
                                 {
-                                    <li class="list-group-item px-0">
-                                        <a href="@video.YouTubeUrl" target="_blank" class="text-decoration-none">▶ Watch</a>
-                                        <span class="text-muted ms-2">— @video.TrackNote</span>
+                                    <li class="list-group-item px-0 spotify-list-item text-truncate">
+                                        <a href="@video.YouTubeUrl" target="_blank" class="spotify-link">▶ Watch</a>
+                                        <span class="ms-2">— @video.TrackNote</span>
                                     </li>
                                 }
                             </ul>

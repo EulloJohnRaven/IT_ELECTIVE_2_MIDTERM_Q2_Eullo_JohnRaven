@@ -26,6 +26,7 @@ namespace PlaylistApp.Controllers
             return View(dto);
         }
 
+        // Your Log Out button will trigger this action!
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
